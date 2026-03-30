@@ -18,7 +18,7 @@
         margin-top: 14px;
         font-weight: bold;
       }
-      input {
+      input[type="text"] {
         width: 100%;
         padding: 8px;
         margin-top: 4px;
@@ -26,6 +26,24 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 14px;
+      }
+      .date-range {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .date-range input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .date-range span {
+        display: flex;
+        align-items: center;
+        color: #555;
+        font-weight: normal;
       }
       button {
         margin-top: 20px;
@@ -40,11 +58,17 @@
       button:hover {
         background: #1f6591;
       }
+      #range-display {
+        margin-top: 6px;
+        font-size: 13px;
+        color: #2980b9;
+        min-height: 18px;
+      }
     </style>
   </head>
   <body>
     <h1>✈ Flight Search</h1>
-    <form method="post" action="/flights">
+    <form method="post" action="/flights" onsubmit="return validateDates()">
       <label
         >Origin Airport Code
         <input
@@ -66,14 +90,54 @@
         />
       </label>
       <label
-        >From Date
-        <input type="date" name="date_from" required />
-      </label>
-      <label
-        >To Date
-        <input type="date" name="date_to" required />
+        >Date Range
+        <div class="date-range">
+          <input
+            type="date"
+            name="date_from"
+            id="date_from"
+            required
+            onchange="updateRange()"
+          />
+          <span>→</span>
+          <input
+            type="date"
+            name="date_to"
+            id="date_to"
+            required
+            onchange="updateRange()"
+          />
+        </div>
+        <div id="range-display"></div>
       </label>
       <button type="submit">Search Flights</button>
     </form>
+    <script>
+      function updateRange() {
+        const from = document.getElementById("date_from").value;
+        const to = document.getElementById("date_to").value;
+        const el = document.getElementById("range-display");
+        if (from && to) {
+          if (to < from) {
+            el.style.color = "#e74c3c";
+            el.textContent = "⚠ End date must be after start date.";
+          } else {
+            const days =
+              Math.round((new Date(to) - new Date(from)) / 86400000) + 1;
+            el.style.color = "#2980b9";
+            el.textContent = `📅 ${days} day${days > 1 ? "s" : ""} selected`;
+          }
+        }
+      }
+      function validateDates() {
+        const from = document.getElementById("date_from").value;
+        const to = document.getElementById("date_to").value;
+        if (to < from) {
+          alert("End date must be on or after the start date.");
+          return false;
+        }
+        return true;
+      }
+    </script>
   </body>
 </html>
