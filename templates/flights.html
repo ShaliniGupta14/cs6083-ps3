@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Available Flights</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+      h1 {
+        color: #2c3e50;
+      }
+      .meta {
+        color: #555;
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        background: #2980b9;
+        color: white;
+        padding: 10px;
+        text-align: left;
+      }
+      td {
+        padding: 9px 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      tr.clickable-row {
+        cursor: pointer;
+      }
+      tr.clickable-row:hover td {
+        background: #f0f7ff;
+      }
+      a {
+        color: #2980b9;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .none {
+        color: #888;
+        margin-top: 20px;
+      }
+      .back {
+        display: inline-block;
+        margin-top: 20px;
+        color: #2980b9;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Available Flights</h1>
+    <p class="meta">
+      {{ origin }} → {{ dest }} &nbsp;|&nbsp; {{ date_from }} to {{ date_to }}
+    </p>
+
+    {% if flights %}
+    <table>
+      <thead>
+        <tr>
+          <th>Flight #</th>
+          <th>Airline</th>
+          <th>Origin</th>
+          <th>Destination</th>
+          <th>Departure Date</th>
+          <th>Departure Time (GMT)</th>
+          <th>Duration (min)</th>
+          <th>Seats</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for f in flights %}
+        <tr
+          class="clickable-row"
+          onclick="window.location='/flight/{{ f.flight_number }}/{{ f.departure_date }}'"
+        >
+          <td>{{ f.flight_number }}</td>
+          <td>{{ f.airline_name }}</td>
+          <td>{{ f.origin_code }}</td>
+          <td>{{ f.dest_code }}</td>
+          <td>{{ f.departure_date }}</td>
+          <td>{{ f.departure_time }}</td>
+          <td>{{ f.duration }}</td>
+          <td><span style="color: #2980b9">Check Availability →</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="none">No flights found for the selected route and dates.</p>
+    {% endif %}
+
+    <a class="back" href="/">← New Search</a>
+  </body>
+</html>

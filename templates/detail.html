@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flight Detail</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 0 20px;
+      }
+      h1 {
+        color: #2c3e50;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th {
+        background: #2980b9;
+        color: white;
+        padding: 10px;
+        text-align: left;
+        width: 50%;
+      }
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .avail {
+        color: #27ae60;
+        font-weight: bold;
+      }
+      .full {
+        color: #e74c3c;
+        font-weight: bold;
+      }
+      .bar-wrap {
+        background: #eee;
+        border-radius: 6px;
+        height: 18px;
+        margin-top: 16px;
+      }
+      .bar {
+        background: #2980b9;
+        border-radius: 6px;
+        height: 18px;
+        transition: width 0.4s;
+      }
+      .bar-label {
+        font-size: 12px;
+        color: #555;
+        margin-top: 4px;
+      }
+      .back {
+        display: inline-block;
+        margin-top: 24px;
+        color: #2980b9;
+      }
+      .none {
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>✈ Flight Detail</h1>
+
+    {% if flight %} {% set pct = ((flight.booked / flight.capacity) * 100) | int
+    %}
+    <table>
+      <tr>
+        <th>Flight Number</th>
+        <td>{{ flight.flight_number }}</td>
+      </tr>
+      <tr>
+        <th>Airline</th>
+        <td>{{ flight.airline_name }}</td>
+      </tr>
+      <tr>
+        <th>Route</th>
+        <td>{{ flight.origin_code }} → {{ flight.dest_code }}</td>
+      </tr>
+      <tr>
+        <th>Departure Date</th>
+        <td>{{ flight.departure_date }}</td>
+      </tr>
+      <tr>
+        <th>Departure Time</th>
+        <td>{{ flight.departure_time }} GMT</td>
+      </tr>
+      <tr>
+        <th>Plane Capacity</th>
+        <td>{{ flight.capacity }} seats</td>
+      </tr>
+      <tr>
+        <th>Seats Booked</th>
+        <td>{{ flight.booked }}</td>
+      </tr>
+      <tr>
+        <th>Seats Available</th>
+        <td>
+          {% if flight.available > 0 %}
+          <span class="avail">{{ flight.available }} available</span>
+          {% else %}
+          <span class="full">FULLY BOOKED</span>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+
+    <!-- occupancy bar -->
+    <div class="bar-wrap" style="margin-top: 20px">
+      <div class="bar" style="width: {{ pct }}%;"></div>
+    </div>
+    <div class="bar-label">
+      {{ pct }}% occupied ({{ flight.booked }} / {{ flight.capacity }})
+    </div>
+
+    {% else %}
+    <p class="none">Flight not found.</p>
+    {% endif %}
+
+    <a class="back" href="javascript:history.back()">← Back to Results</a>
+  </body>
+</html>
